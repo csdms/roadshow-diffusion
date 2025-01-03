@@ -52,36 +52,22 @@ def solve1d(concentration, grid_spacing=1.0, time_step=1.0, diffusivity=1.0):
     concentration[1:-1] += diffusivity * time_step / grid_spacing**2 * centered_diff[1:-1]
 
 
-# ## Run the model
+# Run the model in an example.
+def diffusion_example():
+    D = 100
+    Lx = 7
+    dx = 0.5
 
-# Start by setting two fixed model parameters--the diffusivity and the size of the model domain.
-D = 100
-Lx = 300
+    x, nx = make_grid(Lx, dx)
+    dt = calculate_time_step(dx, D)
+    C = set_initial_profile(nx, boundary_left=500, boundary_right=0)
 
-# Next, set up the model grid using a NumPy array.
-dx = 0.5
-x, nx = make_grid(Lx, dx)
+    print("Time = 0\n", C)
+    for t in range(0, 5):
+        solve1d(C, dx, dt, D)
+        print(f"Time = {t*dt:.4f}\n", C)
 
-# Set the initial conditions for the model.
-# The concentration `C` is a step function with a high value on the left, a low value on the right, and the step at the center of the domain.
-C_left = 500
-C_right = 0
-C = set_initial_profile(nx, boundary_left=C_left, boundary_right=C_right)
 
-# Plot the initial concentration profile.
-plot_profile(C, x)
-
-# Set the start time of the model and the number of time steps. Then calculate a stable time step for the model using the Von Neumann stability criterion.
-time = 0
-nt = 5000
-dt = calculate_time_step(dx, D)
-
-# Loop over the time steps of the model,
-# solving the diffusion equation using the FTCS scheme described above.
-# The boundary conditions are clamped, so reset them after each time step.
-for t in range(0, nt):
-    solve1d(C, dx, dt, D)
-
-# Plot the result.
-plot_profile(C, x, color="b")
-
+if __name__ == "__main__":
+    print("Diffusion model example")
+    diffusion_example()
