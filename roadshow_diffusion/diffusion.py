@@ -48,6 +48,36 @@ def make_grid(domain_size, grid_spacing):
 
 # Finally, write a function to solve the diffusion equation, advancing the model by one time step.
 def solve1d(concentration, grid_spacing=1.0, time_step=1.0, diffusivity=1.0):
+    """Solve the one-dimensional diffusion equation with fixed boundary conditions.
+
+    Parameters
+    ----------
+    concentration : ndarray
+        The quantity being diffused.
+    grid_spacing : float (optional)
+        Distance between grid nodes.
+    time_step : float (optional)
+        Time step of model.
+    diffusivity : float (optional)
+        Diffusivity.
+
+    Returns
+    -------
+    result : ndarray
+        The concentration after a time step.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from roadshow_diffusion.solver import solve1d
+    >>> z = np.zeros(5)
+    >>> z[2] = 5
+    >>> z
+    array([0.0, 0.0, 5.0, 0.0, 0.0])
+    >>> solve1d(z, diffusivity=0.25)
+    >>> z
+    array([0.0, 1.2, 2.5, 1.2, 0.0])
+    """
     centered_diff = np.roll(concentration, -1) - 2*concentration + np.roll(concentration, 1)
     concentration[1:-1] += diffusivity * time_step / grid_spacing**2 * centered_diff[1:-1]
 
