@@ -40,7 +40,7 @@ It takes care of many of the tedious details that a scientist would have to deal
 Here are the topics we'll cover in order to develop our model.
 
 * Project Jupyter
-    * JupyterHub: login to explore Hub
+    * JupyterHub: login to *explore* Hub
     * JupyterLab: show components
     * Notebook: open a new notebook and show basics
 * Shell (bash) commands
@@ -48,22 +48,24 @@ Here are the topics we'll cover in order to develop our model.
 * Intro to Git/GitHub
     * Set up SSH keys
     * Set up a repo for the diffusion model notebook
-* Diffusion model in a notebook II
-    * Refactor, modularize model in notebook
+    * Clone repo to workspace on *explore* Hub
 * Export notebook to Python source
 * Text editors
 * Virtual environments
     * conda
     * venv or virtualenv
-* Refactor diffusion model in Python source
+* Refactor diffusion model
     * Rename file to diffusion.py to adhere to module naming rules
+    * Modularize model script
+* Unit testing
+    * Test-driven development
 * Package model
     * Module definition file
     * Basic pyproject.toml file
     * Show how to pip install into a venv
-* Unit tests
 * Documentation
-* Diffusion model in a notebook III
+* Diffusion model in a notebook II
     * Import diffusion model from new package
-* Visualize with Jupyter widgets
+    * Import someone else's diffusion model
+* Visualize model output with Jupyter widgets
 * Landlab
