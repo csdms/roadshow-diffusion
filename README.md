@@ -23,6 +23,7 @@ Topics we'll encounter:
 * Shell commands
 * Modularization
 * Version control
+* Collaborative coding
 * Text editors
 * Virtual environments
 * Package management
@@ -57,6 +58,7 @@ Here are the topics we'll cover in order to develop our model.
 * Refactor diffusion model
     * Rename file to diffusion.py to adhere to module naming rules
     * Modularize model script
+    * Demonstrate collaborative coding through GitHub PRs
 * Unit testing
     * Test-driven development
 * Package model
