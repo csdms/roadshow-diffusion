@@ -52,8 +52,29 @@ def test_initial_profile_min_max():
     assert z.max() == pytest.approx(500.0)
 
 
-def test_make_grid():
-    pass
+def test_make_grid_length():
+    """Check the length of the grid."""
+    x, size = make_grid(100.0, 1.0)
+    assert len(x) == 100
+    assert size == len(x)
+
+
+def test_make_grid_spacing():
+    """Check the grid spacing."""
+    x, size = make_grid(50.0, 10.0)
+
+    assert size == 5
+    assert np.all(np.diff(x) == pytest.approx(10.0))
+
+
+def test_make_grid_end_points():
+    """Check the grid end points."""
+    width, spacing = 500.0, 0.5
+    x, size = make_grid(width, spacing)
+
+    assert size == 250
+    assert x[0] == pytest.approx(0.0)
+    assert x[-1] == pytest.approx(width - spacing)
 
 
 def test_solve1d_does_something():
