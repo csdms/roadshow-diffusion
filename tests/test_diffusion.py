@@ -25,6 +25,14 @@ def test_time_step_increases_with_spacing():
     assert np.all(np.diff(time_steps) > 0.0)
 
 
+def test_time_step_decreases_with_diffusivity():
+    time_steps = [
+        calculate_time_step(1.0, diffusivity)
+        for diffusivity in [1.0, 10.0, 100.0, 1000.0]
+    ]
+    assert np.all(np.diff(time_steps) < 0.0)
+
+
 def test_time_step():
     time_step = calculate_time_step(GRID_SPACING, DIFFUSIVITY)
     assert type(time_step) is float
