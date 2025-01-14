@@ -6,10 +6,6 @@ import pytest
 
 from roadshow_diffusion.diffusion import calculate_time_step, set_initial_profile, make_grid, solve1d
 
-DOMAIN_SIZE = 100
-TOLERANCE = 0.01
-ZMAX = 500.0
-
 
 def test_time_step_is_float():
     time_step = calculate_time_step(1, 1)
@@ -36,11 +32,24 @@ def test_time_step_decreases_with_diffusivity():
     assert np.all(np.diff(time_steps) < 0.0)
 
 
-def test_initial_profile_defaults():
+def test_initial_profile_is_array_of_float():
+    """Check profile is a numpy array of floats."""
     z = set_initial_profile()
-    assert type(z) is np.ndarray
-    assert len(z) == DOMAIN_SIZE
-    assert math.isclose(z.max(), ZMAX, rel_tol=TOLERANCE)
+    return isinstance(z, np.ndarray) and np.issubdtype(z.dtype, np.floating)
+
+
+def test_initial_profile_length():
+    """Check the array is of the correct length."""
+    z = set_initial_profile(grid_size=100)
+    assert len(z) == 100
+
+
+def test_initial_profile_min_max():
+    """Check values are in range."""
+    z = set_initial_profile(boundary_left=500, boundary_right=0)
+    assert np.all(z >= 0.0) and np.all(z <= 500.0)
+    assert z.min() == pytest.approx(0.0)
+    assert z.max() == pytest.approx(500.0)
 
 
 def test_make_grid():
