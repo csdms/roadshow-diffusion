@@ -12,6 +12,11 @@ TOLERANCE = 0.01
 ZMAX = 500.0
 
 
+def test_time_step_is_float():
+    time_step = calculate_time_step(1, 1)
+    assert isinstance(time_step, float)
+
+
 def test_time_step():
     time_step = calculate_time_step(GRID_SPACING, DIFFUSIVITY)
     assert type(time_step) is float
