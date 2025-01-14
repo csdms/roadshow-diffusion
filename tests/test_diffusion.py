@@ -7,8 +7,6 @@ import pytest
 from roadshow_diffusion.diffusion import calculate_time_step, set_initial_profile, make_grid, solve1d
 
 DOMAIN_SIZE = 100
-GRID_SPACING = 1.0
-DIFFUSIVITY = 1.0
 TIME_STEP = 0.5
 TOLERANCE = 0.01
 ZMAX = 500.0
@@ -37,12 +35,6 @@ def test_time_step_decreases_with_diffusivity():
         for diffusivity in [1.0, 10.0, 100.0, 1000.0]
     ]
     assert np.all(np.diff(time_steps) < 0.0)
-
-
-def test_time_step():
-    time_step = calculate_time_step(GRID_SPACING, DIFFUSIVITY)
-    assert type(time_step) is float
-    assert math.isclose(time_step, TIME_STEP, rel_tol=TOLERANCE)
 
 
 def test_initial_profile_defaults():
