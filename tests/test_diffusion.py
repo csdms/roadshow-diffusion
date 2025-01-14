@@ -2,6 +2,8 @@
 import math
 
 import numpy as np
+import pytest
+
 from roadshow_diffusion.diffusion import calculate_time_step, set_initial_profile, make_grid, solve1d
 
 DOMAIN_SIZE = 100
@@ -15,6 +17,10 @@ ZMAX = 500.0
 def test_time_step_is_float():
     time_step = calculate_time_step(1, 1)
     assert isinstance(time_step, float)
+
+
+def test_time_step_with_zero_spacing():
+    assert calculate_time_step(0.0, 1) == pytest.approx(0.0)
 
 
 def test_time_step_increases_with_spacing():
