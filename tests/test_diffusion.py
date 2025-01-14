@@ -17,6 +17,14 @@ def test_time_step_is_float():
     assert isinstance(time_step, float)
 
 
+def test_time_step_increases_with_spacing():
+    time_steps = [
+        calculate_time_step(spacing, 1.0)
+        for spacing in [1.0, 10.0, 100.0, 1000.0]
+    ]
+    assert np.all(np.diff(time_steps) > 0.0)
+
+
 def test_time_step():
     time_step = calculate_time_step(GRID_SPACING, DIFFUSIVITY)
     assert type(time_step) is float
