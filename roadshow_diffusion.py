@@ -6,6 +6,16 @@ def calculate_stable_time_step(dx, diffusivity):
     return 0.5 * dx**2 / diffusivity
 
 
+def step_like(x, step_at=0):
+    y = np.empty_like(x, dtype=float)
+
+    y[:step_at] = 1.0
+    y[step_at] = 0.5
+    y[step_at+1:] = 0.0
+
+    return y
+
+
 def set_initial_profile(grid_size=100, boundary_left=500, boundary_right=0):
     profile = np.empty(grid_size)
     profile[: grid_size // 2] = boundary_left
