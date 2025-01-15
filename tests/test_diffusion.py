@@ -73,7 +73,7 @@ def test_make_grid_end_points():
     width, spacing = 500.0, 0.5
     x, size = make_grid(width, spacing)
 
-    assert size == 250
+    assert size == 1000
     assert x[0] == pytest.approx(0.0)
     assert x[-1] == pytest.approx(width - spacing)
 
