@@ -34,6 +34,22 @@ def calculate_second_derivative(y, dx=1.0):
     return d2y_dx2
 
 
+def diffuse_until(y_initial, stop_time, dx=1.0, diffusivity=1.0):
+    stable_dt = 0.9 * calculate_stable_time_step(dx, diffusivity)
+
+    y = y_initial.copy()
+
+    time_remaining = stop_time
+    while time_remaining > 0.0:
+        dt = min(time_remaining, stable_dt)
+
+        y += diffusivity * dt * calculate_second_derivative(y, dx=dx)
+
+        time_remaining -= dt
+
+    return y
+
+
 def solve1d(concentration, grid_spacing=1.0, time_step=1.0, diffusivity=1.0):
     """Solve the one-dimensional diffusion equation with fixed boundary conditions.
 
@@ -74,15 +90,15 @@ def diffusion_model():
     Lx = 7
     dx = 0.5
     n_points = 81
+    stop_time = 1.0
 
     x, dx = np.linspace(0, Lx, num=n_points, retstep=True)
     dt = calculate_stable_time_step(dx, D)
-    C = step_like(x, step_at=len(x) // 2)
+    C_initial = step_like(x, step_at=len(x) // 2)
 
-    print("Time = 0\n", C)
-    for t in range(0, 5):
-        solve1d(C, dx, dt, D)
-        print(f"Time = {t*dt:.4f}\n", C)
+    C = diffuse_until(C_initial, stop_time, dx=dx, diffusivity=D)
+
+    print(C)
 
 
 if __name__ == "__main__":
