@@ -19,9 +19,9 @@ def step_like(x, step_at=0):
     return y
 
 
-def plot_profile(concentration, grid, color="r"):
+def plot_profile(x, concentration, color="r"):
     plt.figure()
-    plt.plot(grid, concentration, color)
+    plt.plot(x, concentration, color)
     plt.xlabel("x")
     plt.ylabel("C")
     plt.title("Concentration profile")
@@ -60,6 +60,10 @@ def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=
     concentration = diffuse_until(
         initial_concentration, stop_time, dx=dx, diffusivity=diffusivity
     )
+
+    plot_profile(x, initial_concentration, "g")
+    plot_profile(x, concentration, "r")
+    plt.show()
 
     return concentration
 
