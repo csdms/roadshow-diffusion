@@ -27,6 +27,23 @@ def boxcar_like(x, step_at=0):
     ) - 1.0
 
 
+def new_profile(x, form="step"):
+    match form:
+        case "step":
+            return step_like(x, step_at=len(x) // 2)
+        case "boxcar":
+            return boxcar_like(x, step_at=len(x) // 4)
+        case "bowl":
+            return 1.0 - boxcar_like(x, step_at=len(x) // 4)
+        case "wedding":
+            return (
+                boxcar_like(x, step_at=len(x) // 8)
+                + boxcar_like(x, step_at=3 * len(x) // 8)
+            )
+        case _:
+            raise ValueError(f"unknown profile type ({form!r})")
+
+
 def plot_profile(x, concentration, color="r"):
     plt.figure()
     plt.plot(x, concentration, color)
@@ -63,7 +80,7 @@ def diffuse_until(y_initial, stop_time, dx=1.0, diffusivity=1.0):
 
 def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=81):
     x, dx = np.linspace(0, width, num=n_points, retstep=True)
-    initial_concentration = step_like(x, step_at=len(x) // 2)
+    initial_concentration = new_profile(x, form="step")
 
     concentration = diffuse_until(
         initial_concentration, stop_time, dx=dx, diffusivity=diffusivity
