@@ -1,3 +1,6 @@
+import os
+import tomllib
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -63,6 +66,13 @@ def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=
 
 if __name__ == "__main__":
     print("Diffusion model")
-    concentration = run_diffusion_model()
+
+    if os.path.isfile("diffusion.toml"):
+        with open("diffusion.toml", "rb") as stream:
+            params = tomllib.load(stream)
+    else:
+        params = {}
+
+    concentration = run_diffusion_model(**params)
 
     print(concentration)
