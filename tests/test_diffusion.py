@@ -3,7 +3,7 @@ import numpy as np
 import pytest
 
 from roadshow_diffusion import calculate_stable_time_step
-from roadshow_diffusion import solve1d
+from roadshow_diffusion import diffuse_until
 from roadshow_diffusion import step_like
 
 
@@ -56,69 +56,57 @@ def test_step_like_min_max():
     assert z.max() == pytest.approx(1.0)
 
 
-def test_solve1d_does_something():
+def test_diffuse_until_does_something():
     """Check that things actually change."""
-    z = np.asarray([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
-    z_initial = z.copy()
+    z_initial = np.asarray([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
 
-    solve1d(z, time_step=0.5)
+    z = diffuse_until(z_initial, 1.0)
 
     assert np.abs(z - z_initial).max() > 0
 
 
-def test_solve1d_fixed_boundaries():
+def test_diffuse_until_fixed_boundaries():
     """Check that boundary values don't change."""
-    time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
-    z = np.asarray([0.0, 0.0, 1.0, 1.0, 0.0, 0.0])
-
-    solve1d(z, time_step=time_step)
+    z = diffuse_until(np.asarray([0.0, 0.0, 1.0, 1.0, 0.0, 0.0]), 10.0)
     assert z[0] == pytest.approx(0.0)
     assert z[-1] == pytest.approx(0.0)
 
     z[0] = 10.0
     z[-1] = 100.0
-    for _ in range(1000):
-        solve1d(z, time_step=1.0)
+    z = diffuse_until(z, 10.0)
 
     assert z[0] == pytest.approx(10.0)
     assert z[-1] == pytest.approx(100.0)
 
 
-def test_solve1d_in_bounds():
+def test_diffuse_until_in_bounds():
     """Check that values remain with max/min."""
-    time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
-    z = np.asarray([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
-    solve1d(z, time_step=time_step)
+    z = diffuse_until(np.asarray([1.0, 1.0, 1.0, 0.0, 0.0, 0.0]), 1.0)
 
     assert np.all(z <= 1.0)
     assert np.all(z >= 0.0)
 
 
-def test_solve1d_mass_balance():
+def test_diffuse_until_mass_balance():
     """Check that mass is concerved."""
     time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
-    z = np.asarray([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
-    expected = z.sum()
-    solve1d(z, time_step=time_step)
+
+    z_initial = np.asarray([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
+    expected = z_initial.sum()
+    z = diffuse_until(z_initial, time_step)
     actual = z.sum()
 
     assert actual == pytest.approx(expected)
 
 
-def test_solve1d_time_step():
+def test_diffuse_until_time_step():
     """Check there's less diffusion with small time step."""
     z_initial = np.asarray([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
 
     time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
-    z = z_initial.copy()
 
-    solve1d(z, time_step=time_step)
-    dz_large_dt = z_initial - z
-
-    time_step *= 0.5
-    z = z_initial.copy()
-    solve1d(z, time_step=time_step)
-    dz_small_dt = z_initial - z
+    dz_large_dt = z_initial - diffuse_until(z_initial, time_step)
+    dz_small_dt = z_initial - diffuse_until(z_initial, time_step / 2.0)
 
     assert np.abs(dz_large_dt - dz_small_dt).max() > 0
     assert np.all(np.abs(dz_large_dt) >= np.abs(dz_small_dt))
