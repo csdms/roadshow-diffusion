@@ -4,8 +4,8 @@ import pytest
 
 from roadshow_diffusion import calculate_stable_time_step
 from roadshow_diffusion import make_grid
-from roadshow_diffusion import set_initial_profile
 from roadshow_diffusion import solve1d
+from roadshow_diffusion import step_like
 
 
 def test_time_step_is_float():
@@ -33,24 +33,28 @@ def test_time_step_decreases_with_diffusivity():
     assert np.all(np.diff(time_steps) < 0.0)
 
 
-def test_initial_profile_is_array_of_float():
+def test_step_like_is_array_of_float():
     """Check profile is a numpy array of floats."""
-    z = set_initial_profile()
+    z = step_like([1.0, 2.0, 3.0])
+    return isinstance(z, np.ndarray) and np.issubdtype(z.dtype, np.floating)
+
+    z = step_like([1, 2, 3])
     return isinstance(z, np.ndarray) and np.issubdtype(z.dtype, np.floating)
 
 
-def test_initial_profile_length():
+def test_step_like_length():
     """Check the array is of the correct length."""
-    z = set_initial_profile(grid_size=100)
+    z = step_like(np.arange(100))
     assert len(z) == 100
 
 
-def test_initial_profile_min_max():
+def test_step_like_min_max():
     """Check values are in range."""
-    z = set_initial_profile(boundary_left=500, boundary_right=0)
-    assert np.all(z >= 0.0) and np.all(z <= 500.0)
+    x = np.arange(100.0)
+    z = step_like(np.arange(100.0), step_at=len(x) // 2)
+    assert np.all(z >= 0.0) and np.all(z <= 1.0)
     assert z.min() == pytest.approx(0.0)
-    assert z.max() == pytest.approx(500.0)
+    assert z.max() == pytest.approx(1.0)
 
 
 def test_make_grid_length():
