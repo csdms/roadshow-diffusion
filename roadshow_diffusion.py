@@ -20,6 +20,13 @@ def step_like(x, step_at=0):
     return y
 
 
+def boxcar_like(x, step_at=0):
+    return (
+        step_like(x, step_at=len(x) - step_at - 1)
+        + (1.0 - step_like(x, step_at=step_at))
+    ) - 1.0
+
+
 def plot_profile(x, concentration, color="r"):
     plt.figure()
     plt.plot(x, concentration, color)
