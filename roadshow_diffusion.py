@@ -75,7 +75,14 @@ def load_params_from_path(filepath):
 
 
 if __name__ == "__main__":
-    print("Diffusion model")
+    import matplotlib as mpl
+    import mpl_ascii
+
+    mpl_ascii.AXES_WIDTH=70
+    mpl_ascii.AXES_HEIGHT=15
+
+    mpl.use("module://mpl_ascii")
+
     filepath = "diffusion.toml"
 
     if os.path.isfile(filepath):
