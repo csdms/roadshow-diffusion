@@ -24,6 +24,16 @@ def plot_profile(concentration, grid, color="r"):
     plt.title("Concentration profile")
 
 
+def calculate_second_derivative(y, dx=1.0):
+    d2y_dx2 = np.empty_like(y)
+
+    d2y_dx2[1:-1] = (y[:-2] - 2 * y[1:-1] + y[2:]) / dx**2
+    d2y_dx2[0] = 0.0
+    d2y_dx2[-1] = 0.0
+
+    return d2y_dx2
+
+
 def solve1d(concentration, grid_spacing=1.0, time_step=1.0, diffusivity=1.0):
     """Solve the one-dimensional diffusion equation with fixed boundary conditions.
 
