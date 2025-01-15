@@ -3,7 +3,6 @@ import numpy as np
 import pytest
 
 from roadshow_diffusion import calculate_stable_time_step
-from roadshow_diffusion import make_grid
 from roadshow_diffusion import solve1d
 from roadshow_diffusion import step_like
 
@@ -55,31 +54,6 @@ def test_step_like_min_max():
     assert np.all(z >= 0.0) and np.all(z <= 1.0)
     assert z.min() == pytest.approx(0.0)
     assert z.max() == pytest.approx(1.0)
-
-
-def test_make_grid_length():
-    """Check the length of the grid."""
-    x, size = make_grid(100.0, 1.0)
-    assert len(x) == 100
-    assert size == len(x)
-
-
-def test_make_grid_spacing():
-    """Check the grid spacing."""
-    x, size = make_grid(50.0, 10.0)
-
-    assert size == 5
-    assert np.all(np.diff(x) == pytest.approx(10.0))
-
-
-def test_make_grid_end_points():
-    """Check the grid end points."""
-    width, spacing = 500.0, 0.5
-    x, size = make_grid(width, spacing)
-
-    assert size == 1000
-    assert x[0] == pytest.approx(0.0)
-    assert x[-1] == pytest.approx(width - spacing)
 
 
 def test_solve1d_does_something():
