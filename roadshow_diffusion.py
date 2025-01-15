@@ -1,4 +1,5 @@
 import os
+import sys
 import tomllib
 
 import numpy as np
@@ -91,4 +92,4 @@ if __name__ == "__main__":
         params = {}
     concentration = run_diffusion_model(**params)
 
-    print(concentration)
+    np.savetxt(sys.stdout, concentration, fmt="%.6f")
