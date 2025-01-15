@@ -2,24 +2,24 @@
 import numpy as np
 import pytest
 
-from roadshow_diffusion import calculate_time_step
+from roadshow_diffusion import calculate_stable_time_step
 from roadshow_diffusion import make_grid
 from roadshow_diffusion import set_initial_profile
 from roadshow_diffusion import solve1d
 
 
 def test_time_step_is_float():
-    time_step = calculate_time_step(1, 1)
+    time_step = calculate_stable_time_step(1, 1)
     assert isinstance(time_step, float)
 
 
 def test_time_step_with_zero_spacing():
-    assert calculate_time_step(0.0, 1) == pytest.approx(0.0)
+    assert calculate_stable_time_step(0.0, 1) == pytest.approx(0.0)
 
 
 def test_time_step_increases_with_spacing():
     time_steps = [
-        calculate_time_step(spacing, 1.0)
+        calculate_stable_time_step(spacing, 1.0)
         for spacing in [1.0, 10.0, 100.0, 1000.0]
     ]
     assert np.all(np.diff(time_steps) > 0.0)
@@ -27,7 +27,7 @@ def test_time_step_increases_with_spacing():
 
 def test_time_step_decreases_with_diffusivity():
     time_steps = [
-        calculate_time_step(1.0, diffusivity)
+        calculate_stable_time_step(1.0, diffusivity)
         for diffusivity in [1.0, 10.0, 100.0, 1000.0]
     ]
     assert np.all(np.diff(time_steps) < 0.0)
@@ -90,7 +90,7 @@ def test_solve1d_does_something():
 
 def test_solve1d_fixed_boundaries():
     """Check that boundary values don't change."""
-    time_step = 0.5 * calculate_time_step(1.0, 1.0)
+    time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
     z = np.asarray([0.0, 0.0, 1.0, 1.0, 0.0, 0.0])
 
     solve1d(z, time_step=time_step)
@@ -108,7 +108,7 @@ def test_solve1d_fixed_boundaries():
 
 def test_solve1d_in_bounds():
     """Check that values remain with max/min."""
-    time_step = 0.5 * calculate_time_step(1.0, 1.0)
+    time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
     z = np.asarray([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
     solve1d(z, time_step=time_step)
 
@@ -118,7 +118,7 @@ def test_solve1d_in_bounds():
 
 def test_solve1d_mass_balance():
     """Check that mass is concerved."""
-    time_step = 0.5 * calculate_time_step(1.0, 1.0)
+    time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
     z = np.asarray([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
     expected = z.sum()
     solve1d(z, time_step=time_step)
@@ -131,7 +131,7 @@ def test_solve1d_time_step():
     """Check there's less diffusion with small time step."""
     z_initial = np.asarray([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
 
-    time_step = 0.5 * calculate_time_step(1.0, 1.0)
+    time_step = 0.5 * calculate_stable_time_step(1.0, 1.0)
     z = z_initial.copy()
 
     solve1d(z, time_step=time_step)
