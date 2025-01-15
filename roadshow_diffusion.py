@@ -16,13 +16,6 @@ def step_like(x, step_at=0):
     return y
 
 
-def set_initial_profile(grid_size=100, boundary_left=500, boundary_right=0):
-    profile = np.empty(grid_size)
-    profile[: grid_size // 2] = boundary_left
-    profile[grid_size // 2 :] = boundary_right
-    return profile
-
-
 def plot_profile(concentration, grid, color="r"):
     plt.figure()
     plt.plot(grid, concentration, color)
@@ -78,7 +71,7 @@ def diffusion_model():
 
     x, nx = make_grid(Lx, dx)
     dt = calculate_stable_time_step(dx, D)
-    C = set_initial_profile(nx, boundary_left=500, boundary_right=0)
+    C = step_like(x, step_at=len(x) // 2)
 
     print("Time = 0\n", C)
     for t in range(0, 5):
