@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def calculate_time_step(grid_spacing, diffusivity):
-    return 0.5 * grid_spacing**2 / diffusivity
+def calculate_stable_time_step(dx, diffusivity):
+    return 0.5 * dx**2 / diffusivity
 
 
 def set_initial_profile(grid_size=100, boundary_left=500, boundary_right=0):
@@ -67,7 +67,7 @@ def diffusion_model():
     dx = 0.5
 
     x, nx = make_grid(Lx, dx)
-    dt = calculate_time_step(dx, D)
+    dt = calculate_stable_time_step(dx, D)
     C = set_initial_profile(nx, boundary_left=500, boundary_right=0)
 
     print("Time = 0\n", C)
