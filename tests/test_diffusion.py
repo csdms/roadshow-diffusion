@@ -2,10 +2,10 @@
 import numpy as np
 import pytest
 
-from roadshow_diffusion.diffusion import calculate_time_step
-from roadshow_diffusion.diffusion import make_grid
-from roadshow_diffusion.diffusion import set_initial_profile
-from roadshow_diffusion.diffusion import solve1d
+from roadshow_diffusion import calculate_time_step
+from roadshow_diffusion import make_grid
+from roadshow_diffusion import set_initial_profile
+from roadshow_diffusion import solve1d
 
 
 def test_time_step_is_float():
