@@ -78,9 +78,11 @@ def diffuse_until(y_initial, stop_time, dx=1.0, diffusivity=1.0):
     return y
 
 
-def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=81):
+def run_diffusion_model(
+    diffusivity=100.0, width=100.0, stop_time=1.0, n_points=81, profile="step"
+):
     x, dx = np.linspace(0, width, num=n_points, retstep=True)
-    initial_concentration = new_profile(x, form="step")
+    initial_concentration = new_profile(x, form=profile)
 
     concentration = diffuse_until(
         initial_concentration, stop_time, dx=dx, diffusivity=diffusivity
