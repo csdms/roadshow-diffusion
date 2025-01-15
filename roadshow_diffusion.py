@@ -24,11 +24,6 @@ def plot_profile(concentration, grid, color="r"):
     plt.title("Concentration profile")
 
 
-def make_grid(domain_size, grid_spacing):
-    grid = np.arange(start=0, stop=domain_size, step=grid_spacing)
-    return (grid, len(grid))
-
-
 def solve1d(concentration, grid_spacing=1.0, time_step=1.0, diffusivity=1.0):
     """Solve the one-dimensional diffusion equation with fixed boundary conditions.
 
@@ -68,8 +63,9 @@ def diffusion_model():
     D = 100
     Lx = 7
     dx = 0.5
+    n_points = 81
 
-    x, nx = make_grid(Lx, dx)
+    x, dx = np.linspace(0, Lx, num=n_points, retstep=True)
     dt = calculate_stable_time_step(dx, D)
     C = step_like(x, step_at=len(x) // 2)
 
