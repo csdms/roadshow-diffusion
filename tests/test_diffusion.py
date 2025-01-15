@@ -2,10 +2,10 @@
 import numpy as np
 import pytest
 
-from roadshow_diffusion.diffusion import calculate_time_step
-from roadshow_diffusion.diffusion import make_grid
-from roadshow_diffusion.diffusion import set_initial_profile
-from roadshow_diffusion.diffusion import solve1d
+from roadshow_diffusion import calculate_time_step
+from roadshow_diffusion import make_grid
+from roadshow_diffusion import set_initial_profile
+from roadshow_diffusion import solve1d
 
 
 def test_time_step_is_float():
@@ -73,7 +73,7 @@ def test_make_grid_end_points():
     width, spacing = 500.0, 0.5
     x, size = make_grid(width, spacing)
 
-    assert size == 250
+    assert size == 1000
     assert x[0] == pytest.approx(0.0)
     assert x[-1] == pytest.approx(width - spacing)
 

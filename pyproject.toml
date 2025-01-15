@@ -14,4 +14,4 @@ dependencies = [
 ]
 
 [tool.setuptools]
-packages = ["roadshow_diffusion"]
+py-modules = ["roadshow_diffusion"]
