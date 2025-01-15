@@ -50,22 +50,19 @@ def diffuse_until(y_initial, stop_time, dx=1.0, diffusivity=1.0):
     return y
 
 
-def diffusion_model():
-    D = 100
-    Lx = 7
-    dx = 0.5
-    n_points = 81
-    stop_time = 1.0
+def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=81):
+    x, dx = np.linspace(0, width, num=n_points, retstep=True)
+    initial_concentration = step_like(x, step_at=len(x) // 2)
 
-    x, dx = np.linspace(0, Lx, num=n_points, retstep=True)
-    dt = calculate_stable_time_step(dx, D)
-    C_initial = step_like(x, step_at=len(x) // 2)
+    concentration = diffuse_until(
+        initial_concentration, stop_time, dx=dx, diffusivity=diffusivity
+    )
 
-    C = diffuse_until(C_initial, stop_time, dx=dx, diffusivity=D)
-
-    print(C)
+    return concentration
 
 
 if __name__ == "__main__":
     print("Diffusion model")
-    diffusion_model()
+    concentration = run_diffusion_model()
+
+    print(concentration)
