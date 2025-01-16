@@ -13,18 +13,15 @@ def calculate_stable_time_step(dx, diffusivity):
 def step_like(x, step_at=0):
     y = np.empty_like(x, dtype=float)
 
-    y[:step_at] = 1.0
+    y[:step_at] = 0.0
     y[step_at] = 0.5
-    y[step_at+1:] = 0.0
+    y[step_at+1:] = 1.0
 
     return y
 
 
 def boxcar_like(x, step_at=0):
-    return (
-        step_like(x, step_at=len(x) - step_at - 1)
-        + (1.0 - step_like(x, step_at=step_at))
-    ) - 1.0
+    return step_like(x, step_at=step_at) - step_like(x, step_at=len(x) - step_at - 1)
 
 
 def new_profile(x, form="step"):
