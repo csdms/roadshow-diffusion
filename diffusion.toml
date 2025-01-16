@@ -1,0 +1,4 @@
+diffusivity = 10.0
+n_points = 9
+stop_time = 5.0
+width = 100.0
