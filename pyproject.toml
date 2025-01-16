@@ -2,7 +2,7 @@
 requires = [
     "setuptools",
     "wheel",
-    ]
+]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -10,7 +10,7 @@ name = "roadshow-diffusion"
 version = "0.5"
 dependencies = [
     "matplotlib",
-	"mpl_ascii",
+    "mpl_ascii",
     "numpy",
 ]
 
