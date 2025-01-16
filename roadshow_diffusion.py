@@ -64,19 +64,20 @@ def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=
     return concentration
 
 
-def load_params(filepath):
-    if os.path.isfile(filepath):
-        with open(filepath, "rb") as stream:
-            params = tomllib.load(stream)
-    else:
-        params = {}
+def load_params_from_path(filepath):
+    with open(filepath, "rb") as stream:
+        params = tomllib.load(stream)
     return params
 
 
 if __name__ == "__main__":
     print("Diffusion model")
+    filepath = "diffusion.toml"
 
-    params = load_params("diffusion.toml")
+    if os.path.isfile(filepath):
+        params = load_params_from_path(filepath)
+    else:
+        params = {}
     concentration = run_diffusion_model(**params)
 
     print(concentration)
