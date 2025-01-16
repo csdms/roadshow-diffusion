@@ -1,4 +1,5 @@
 import os
+import sys
 import tomllib
 
 import numpy as np
@@ -19,9 +20,9 @@ def step_like(x, step_at=0):
     return y
 
 
-def plot_profile(concentration, grid, color="r"):
+def plot_profile(x, concentration, color="r"):
     plt.figure()
-    plt.plot(grid, concentration, color)
+    plt.plot(x, concentration, color)
     plt.xlabel("x")
     plt.ylabel("C")
     plt.title("Concentration profile")
@@ -61,6 +62,10 @@ def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=
         initial_concentration, stop_time, dx=dx, diffusivity=diffusivity
     )
 
+    plot_profile(x, initial_concentration, "g")
+    plot_profile(x, concentration, "r")
+    plt.show()
+
     return concentration
 
 
@@ -71,7 +76,14 @@ def load_params_from_path(filepath):
 
 
 if __name__ == "__main__":
-    print("Diffusion model")
+    import matplotlib as mpl
+    import mpl_ascii
+
+    mpl_ascii.AXES_WIDTH=70
+    mpl_ascii.AXES_HEIGHT=15
+
+    mpl.use("module://mpl_ascii")
+
     filepath = "diffusion.toml"
 
     if os.path.isfile(filepath):
@@ -80,4 +92,4 @@ if __name__ == "__main__":
         params = {}
     concentration = run_diffusion_model(**params)
 
-    print(concentration)
+    np.savetxt(sys.stdout, concentration, fmt="%.6f")
