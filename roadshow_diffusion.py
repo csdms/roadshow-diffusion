@@ -13,11 +13,32 @@ def calculate_stable_time_step(dx, diffusivity):
 def step_like(x, step_at=0):
     y = np.empty_like(x, dtype=float)
 
-    y[:step_at] = 1.0
+    y[:step_at] = 0.0
     y[step_at] = 0.5
-    y[step_at+1:] = 0.0
+    y[step_at+1:] = 1.0
 
     return y
+
+
+def boxcar_like(x, step_at=0):
+    return step_like(x, step_at=step_at) - step_like(x, step_at=len(x) - step_at - 1)
+
+
+def new_profile(x, form="step"):
+    match form:
+        case "step":
+            return step_like(x, step_at=len(x) // 2)
+        case "boxcar":
+            return boxcar_like(x, step_at=len(x) // 4)
+        case "bowl":
+            return 1.0 - boxcar_like(x, step_at=len(x) // 4)
+        case "wedding":
+            return (
+                boxcar_like(x, step_at=len(x) // 8)
+                + boxcar_like(x, step_at=3 * len(x) // 8)
+            )
+        case _:
+            raise ValueError(f"unknown profile type ({form!r})")
 
 
 def plot_profile(x, concentration, color="r"):
@@ -54,9 +75,11 @@ def diffuse_until(y_initial, stop_time, dx=1.0, diffusivity=1.0):
     return y
 
 
-def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=81):
+def run_diffusion_model(
+    diffusivity=100.0, width=100.0, stop_time=1.0, n_points=81, profile="step"
+):
     x, dx = np.linspace(0, width, num=n_points, retstep=True)
-    initial_concentration = step_like(x, step_at=len(x) // 2)
+    initial_concentration = new_profile(x, form=profile)
 
     concentration = diffuse_until(
         initial_concentration, stop_time, dx=dx, diffusivity=diffusivity
