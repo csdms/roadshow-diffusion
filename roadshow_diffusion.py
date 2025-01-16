@@ -2,15 +2,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def calculate_time_step(grid_spacing, diffusivity):
-    return 0.5 * grid_spacing**2 / diffusivity
+def calculate_stable_time_step(dx, diffusivity):
+    return 0.5 * dx**2 / diffusivity
 
 
-def set_initial_profile(grid_size=100, boundary_left=500, boundary_right=0):
-    profile = np.empty(grid_size)
-    profile[: grid_size // 2] = boundary_left
-    profile[grid_size // 2 :] = boundary_right
-    return profile
+def step_like(x, step_at=0):
+    y = np.empty_like(x, dtype=float)
+
+    y[:step_at] = 1.0
+    y[step_at] = 0.5
+    y[step_at+1:] = 0.0
+
+    return y
 
 
 def plot_profile(concentration, grid, color="r"):
@@ -21,61 +24,45 @@ def plot_profile(concentration, grid, color="r"):
     plt.title("Concentration profile")
 
 
-def make_grid(domain_size, grid_spacing):
-    grid = np.arange(start=0, stop=domain_size, step=grid_spacing)
-    return (grid, len(grid))
+def calculate_second_derivative(y, dx=1.0):
+    d2y_dx2 = np.empty_like(y)
+
+    d2y_dx2[1:-1] = (y[:-2] - 2 * y[1:-1] + y[2:]) / dx**2
+    d2y_dx2[0] = 0.0
+    d2y_dx2[-1] = 0.0
+
+    return d2y_dx2
 
 
-def solve1d(concentration, grid_spacing=1.0, time_step=1.0, diffusivity=1.0):
-    """Solve the one-dimensional diffusion equation with fixed boundary conditions.
+def diffuse_until(y_initial, stop_time, dx=1.0, diffusivity=1.0):
+    stable_dt = 0.9 * calculate_stable_time_step(dx, diffusivity)
 
-    Parameters
-    ----------
-    concentration : ndarray
-        The quantity being diffused.
-    grid_spacing : float (optional)
-        Distance between grid nodes.
-    time_step : float (optional)
-        Time step of model.
-    diffusivity : float (optional)
-        Diffusivity.
+    y = y_initial.copy()
 
-    Returns
-    -------
-    result : ndarray
-        The concentration after a time step.
+    time_remaining = stop_time
+    while time_remaining > 0.0:
+        dt = min(time_remaining, stable_dt)
 
-    Examples
-    --------
-    >>> import numpy as np
-    >>> from roadshow_diffusion.solver import solve1d
-    >>> z = np.zeros(5)
-    >>> z[2] = 5
-    >>> z
-    array([0.0, 0.0, 5.0, 0.0, 0.0])
-    >>> solve1d(z, diffusivity=0.25)
-    >>> z
-    array([0.0, 1.2, 2.5, 1.2, 0.0])
-    """
-    centered_diff = np.roll(concentration, -1) - 2*concentration + np.roll(concentration, 1)
-    concentration[1:-1] += diffusivity * time_step / grid_spacing**2 * centered_diff[1:-1]
+        y += diffusivity * dt * calculate_second_derivative(y, dx=dx)
+
+        time_remaining -= dt
+
+    return y
 
 
-def diffusion_model():
-    D = 100
-    Lx = 7
-    dx = 0.5
+def run_diffusion_model(diffusivity=100.0, width=100.0, stop_time=1.0, n_points=81):
+    x, dx = np.linspace(0, width, num=n_points, retstep=True)
+    initial_concentration = step_like(x, step_at=len(x) // 2)
 
-    x, nx = make_grid(Lx, dx)
-    dt = calculate_time_step(dx, D)
-    C = set_initial_profile(nx, boundary_left=500, boundary_right=0)
+    concentration = diffuse_until(
+        initial_concentration, stop_time, dx=dx, diffusivity=diffusivity
+    )
 
-    print("Time = 0\n", C)
-    for t in range(0, 5):
-        solve1d(C, dx, dt, D)
-        print(f"Time = {t*dt:.4f}\n", C)
+    return concentration
 
 
 if __name__ == "__main__":
     print("Diffusion model")
-    diffusion_model()
+    concentration = run_diffusion_model()
+
+    print(concentration)
